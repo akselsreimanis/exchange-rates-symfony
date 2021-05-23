@@ -1,0 +1,39 @@
+version: '3.6'
+
+services:
+  db:
+    container_name: exchange_rates_db
+    build: docker/db/
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    networks:
+      - app-network
+  app:
+    container_name: exchange_rates_app
+    build: docker/app
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=pgsql://${DB_USER}:${DB_PASSWORD}@db/${DB_DATABASE}?serverVersion=13&charset=utf8
+      - APP_ENV=dev
+    volumes:
+    - ./app:/var/www/exchange_rates
+    networks:
+      - app-network
+  nginx:
+    container_name: exchange_rates_nginx
+    build: docker/nginx
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    volumes:
+      - ./app:/var/www/exchange_rates
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,17 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Exchange rates{% endblock %}
+{% block title %}Exchange rates - {{ currency }}{% endblock %}
 
 {% block body %}
     <div class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="lg:text-center">
                 <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                    A better way to check currency rates
+                    {{ currency }}
                 </p>
                 <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-                    Let's check <strong>{{ 'now'|date('Y.m.d') }}</strong> exchange rates!
+                    We also can also provide you with a {{ currency }} history!
                 </p>
+                    <a href="{{ path('home') }}" class="mt-5 bg-gray-800 hover:bg-gray-600 text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
+                        Back to all currencies
+                    </a>
             </div>
         </div>
     </div>
@@ -25,7 +28,7 @@
                             <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
-                                    Currency
+                                    Date
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
                                     Rate
@@ -33,11 +36,11 @@
                             </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                            {% for rate in rates %}
+                            {% for rate in rates|sort((b, a) => a.date <=> b.date) %}
                                 <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <a href="{{ path('rate_view', {'currency': rate.currency}) }}" class="text-sm font-medium text-gray-900 hover:text-pink-700 font-bold">
-                                        {{ rate.currency }}
+                                    <div class="text-sm font-medium text-gray-900 hover:text-pink-700 font-bold">
+                                        {{ rate.date|date('Y.m.d') }}
                                     </a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
@@ -59,14 +62,14 @@
                             {% endfor %}
                             </tbody>
                         </table>
-                    </div>
+                </div>
 
                 <hr>
                 <div class="text-center my-5">
                     {{ knp_pagination_render(rates) }}
                 </div>
-                </div>
             </div>
         </div>
+    </div>
     </div>
 {% endblock %}

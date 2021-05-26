@@ -33,7 +33,7 @@ class RatesManager
 
     public function getAllRatesWithPagination(int $page, int $limit): PaginationInterface
     {
-        $paginatedRates = $this->paginator->paginate($this->rateRepository->findBy(['date' => new \DateTime('now')]), $page, $limit);
+        $paginatedRates = $this->paginator->paginate($this->rateRepository->findBy(['date' => new \DateTime('yesterday')]), $page, $limit);
 
         return $paginatedRates;
     }
